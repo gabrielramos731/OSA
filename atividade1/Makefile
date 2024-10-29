@@ -39,4 +39,8 @@ rebuild: clean $(BIN_DIR)/$(TARGET)
 # Definir "all" como a regra padrão
 all: $(BIN_DIR)/$(TARGET)
 
-.PHONY: all clean rebuild
+# Executa o programa
+run: $(BIN_DIR)/$(TARGET)
+	./$(BIN_DIR)/$(TARGET)
+
+.PHONY: all clean rebuild run
