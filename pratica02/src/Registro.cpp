@@ -1,16 +1,14 @@
-#include "Registro.h"
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <cstring>
+#include "../include/Registro.h"
 
-Registro(const std::string& n = "", int i = 0) {
+Registro::Registro(){}
+
+Registro::Registro(const std::string& n = "", int i = 0) {
     strncpy(nome, n.c_str(), sizeof(nome) - 1);
-    nome[sizeof(nome) - 1] = '\0';  // Garante que a string é terminada com '\0'
+    nome[sizeof(nome) - 1] = '\0';
     idade = i;
 }
 
-std::string serialize() {
+std::string Registro::serialize() const {
     char buffer[34];
     memset(buffer, '\0', sizeof(buffer));
     memcpy(buffer, nome, sizeof(nome));
@@ -18,12 +16,18 @@ std::string serialize() {
     return std::string(buffer, sizeof(buffer));
 }
 
-void deserialize(const std::string& data) {
+void Registro::deserialize(const std::string& data) {
+    if (data.size() != sizeof(nome) + sizeof(int)) {
+        throw std::invalid_argument("Tamanho de dados inválido para deserialização");
+    }
     memcpy(nome, data.c_str(), sizeof(nome));
     memcpy(&idade, data.c_str() + sizeof(nome), sizeof(int));
     nome[sizeof(nome) - 1] = '\0';
 }
 
-void display() const {
-    std::cout << "Nome: " << nome << ", Idade: " << idade << std::endl;
+std::string Registro::toString() const {
+        std::ostringstream oss;
+        oss << nome << "," << idade;
+        return oss.str();
 }
+

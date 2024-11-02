@@ -2,7 +2,7 @@
 TARGET = main
 
 # Compilador e flags
-CXX = g++
+CXX = g++ -std=c++20
 CXXFLAGS = -Wall -Wextra -Iinclude
 
 # Diretórios
