@@ -9,7 +9,7 @@ class Buffer
 {
 public:
     void escreverRegistroFixo(Registro reg, ofstream out);
-    Registro lerRegistroFixo(ifstream in)
+    Registro lerRegistroFixo(ifstream in);
 
 };
 
