@@ -1,19 +1,21 @@
 #ifndef ARQUIVO_H
 #define ARQUIVO_H
 
-#include <string>
-#include <vector>
-#include"Registro.h"
+#include "Buffer.h"
+
 using namespace std;
 
 class Arquivo
 {
 public:
-    string nomeDoArquivo;
+    std::vector<Registro> registros;
+    Buffer buffer;
 
-    vector<Registro> lerRegistrosCSV();
-    void adicionarRegistroFixo(Registro reg);
-    vector<Registro> lerRegistros();
+    void lerArquivoCSV(const std::string& nomeArquivo);
+
+    void escreverArquivoBinario(const std::string& nomeArquivo);
+
+    void escreverArquivoTexto(const std::string& nomeArquivo);
 };
 
 

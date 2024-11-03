@@ -5,6 +5,9 @@
 #include <fstream>
 #include <vector>
 #include <cstring>
+#include <sstream>
+#include <format>
+
 using namespace std;
 
 class Registro
@@ -13,16 +16,15 @@ public:
     char nome[30];
     int idade;
 
-    Registro(const std::string& n = "", int i = 0);
-    std::string serialize();
+    Registro();
+
+    Registro(const std::string& n, int i);
+
+    std::string serialize() const;
+
     void deserialize(const std::string& data);
-    void display() const;
 
-
-    string packFixed();
-    void unpackFixed(string buffer);
-
-
+    std::string toString() const;
 };
 
 

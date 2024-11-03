@@ -1,17 +1,16 @@
 #ifndef BUFFER_H
 #define BUFFER_H
 
-#include <string>
-#include <vector>
+#include "Registro.h"
+
 using namespace std;
 
 class Buffer
 {
 public:
-    void escreverRegistroFixo(Registro reg, ofstream out);
-    Registro lerRegistroFixo(ifstream in);
-
+    void escreverRegistro(std::ofstream& out, const Registro& reg);
+    
+    Registro lerRegistro(std::ifstream& in);
 };
-
 
 #endif
