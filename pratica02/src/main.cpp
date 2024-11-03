@@ -4,7 +4,9 @@ using namespace std;
 
 int main()
 {
-   Arquivo arquivo;
+    Arquivo arquivo;
+    string fileoutName;
+    int i=1;
 
     std::vector<std::string> arquivosCSV = {
         "/mnt/e/faculdade/OSA/pratica02/files/Nomes_Idades_1.csv",
@@ -14,10 +16,11 @@ int main()
         "/mnt/e/faculdade/OSA/pratica02/files/Nomes_Idades_5.csv"
     };
 
-    int i=1;
     for(std::string dirArquivo : arquivosCSV){
+        fileoutName = "/mnt/e/faculdade/OSA/pratica02/files/fileout/Saida_" + std::to_string(i++);
         arquivo.lerArquivoCSV(dirArquivo);
-        arquivo.escreverArquivoBinario("/mnt/e/faculdade/OSA/pratica02/files/fileout/dado.bin");
+        arquivo.escreverArquivoBinario(fileoutName + ".bin");
+        arquivo.escreverArquivoTexto(fileoutName + ".txt");
         arquivo.registros.clear();
     }
 

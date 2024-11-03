@@ -14,6 +14,8 @@ public:
     void lerArquivoCSV(const std::string& nomeArquivo);
 
     void escreverArquivoBinario(const std::string& nomeArquivo);
+
+    void escreverArquivoTexto(const std::string& nomeArquivo);
 };
 
 

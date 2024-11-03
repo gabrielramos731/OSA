@@ -21,10 +21,23 @@ void Arquivo::lerArquivoCSV(const std::string& nomeArquivo) {
 
 void Arquivo::escreverArquivoBinario(const std::string& nomeArquivo) {
         std::ofstream outFile(nomeArquivo, std::ios::binary);
-        cout << "outfile:" << outFile.is_open() << endl;
         
         for (const auto& reg : registros) {
             buffer.escreverRegistro(outFile, reg);
         }
         outFile.close();
 }
+
+void Arquivo::escreverArquivoTexto(const std::string& nomeArquivo) {
+        std::ofstream outFile(nomeArquivo);
+        if (!outFile) {
+            std::cerr << "Erro ao abrir o arquivo para escrita: " << nomeArquivo << std::endl;
+            return;
+        }
+
+        for (const auto& reg : registros) {
+            outFile << reg.toString() << std::endl;
+        }
+
+        outFile.close();
+    }
