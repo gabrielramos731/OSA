@@ -9,15 +9,15 @@ int main()
     int i=1;
 
     std::vector<std::string> arquivosCSV = {
-        "/mnt/e/faculdade/OSA/pratica02/files/Nomes_Idades_1.csv",
-        "/mnt/e/faculdade/OSA/pratica02/files/Nomes_Idades_2.csv",
-        "/mnt/e/faculdade/OSA/pratica02/files/Nomes_Idades_3.csv",
-        "/mnt/e/faculdade/OSA/pratica02/files/Nomes_Idades_4.csv",
-        "/mnt/e/faculdade/OSA/pratica02/files/Nomes_Idades_5.csv"
-    };
+    "../pratica02/files/Nomes_Idades_1.csv",
+    "../pratica02/files/Nomes_Idades_2.csv",
+    "../pratica02/files/Nomes_Idades_3.csv",
+    "../pratica02/files/Nomes_Idades_4.csv",
+    "../pratica02/files/Nomes_Idades_5.csv"
+};
 
     for(std::string dirArquivo : arquivosCSV){
-        fileoutName = "/mnt/e/faculdade/OSA/pratica02/files/fileout/Saida_" + std::to_string(i++);
+        fileoutName = "../pratica02/files/fileout/Saida_" + std::to_string(i++);
         arquivo.lerArquivoCSV(dirArquivo);
         arquivo.escreverArquivoBinario(fileoutName + ".bin");
         arquivo.escreverArquivoTexto(fileoutName + ".txt");
