@@ -10,20 +10,26 @@ int main()
     int i=1;
 
     std::vector<std::string> arquivosCSV = {
-    "../pratica02/files/Nomes_Idades_1.csv",
-    "../pratica02/files/Nomes_Idades_2.csv",
-    "../pratica02/files/Nomes_Idades_3.csv",
-    "../pratica02/files/Nomes_Idades_4.csv",
-    "../pratica02/files/Nomes_Idades_5.csv"
+    "./files/Nomes_Idades_1.csv",
+    "./files/Nomes_Idades_2.csv",
+    "./files/Nomes_Idades_3.csv",
+    "./files/Nomes_Idades_4.csv",
+    "./files/Nomes_Idades_5.csv"
 };
 
     for(std::string dirArquivo : arquivosCSV){
-        fileoutName = "../pratica02/files/fileout/Saida_" + std::to_string(i++);
+        fileoutName = "./files/fileout/Saida_" + std::to_string(i++);
 
         arquivo.lerArquivoCSV(dirArquivo);
         arquivo.adicionaRegistrosFixo(fileoutName + ".bin");
         arquivo.adicionaRegistrosTxt(fileoutName + ".txt");  
+
         outBinario = arquivo.lerRegistrosFixo(fileoutName + ".bin");
+        for(Registro reg : outBinario){
+            cout << reg.nome << "," << reg.idade << endl;
+        }
+        cout << endl;
+        
         arquivo.registros.clear();
     }
     
