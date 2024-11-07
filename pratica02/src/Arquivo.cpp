@@ -19,7 +19,7 @@ void Arquivo::lerArquivoCSV(const std::string& nomeArquivo) {
 }
 
 
-void Arquivo::escreverArquivoBinario(const std::string& nomeArquivo) {
+void Arquivo::adicionaRegistrosFixo(const std::string& nomeArquivo) {
         std::ofstream outFile(nomeArquivo, std::ios::binary);
         
         for (const auto& reg : registros) {
@@ -28,7 +28,7 @@ void Arquivo::escreverArquivoBinario(const std::string& nomeArquivo) {
         outFile.close();
 }
 
-void Arquivo::escreverArquivoTexto(const std::string& nomeArquivo) {
+void Arquivo::adicionaRegistrosTxt(const std::string& nomeArquivo) {
         std::ofstream outFile(nomeArquivo);
         if (!outFile) {
             std::cerr << "Erro ao abrir o arquivo para escrita: " << nomeArquivo << std::endl;
@@ -41,3 +41,21 @@ void Arquivo::escreverArquivoTexto(const std::string& nomeArquivo) {
 
         outFile.close();
     }
+
+std::vector<Registro> Arquivo::lerRegistrosFixo(const std::string& nomeArquivoBin){
+    std::vector<Registro> inputBinario;
+    std::ifstream inFile(nomeArquivoBin, std::ios::binary);
+
+    if (!inFile) {
+        std::cerr << "Erro ao abrir o arquivo binario: " << nomeArquivoBin << std::endl;
+        return {};
+    }
+
+    while(inFile.peek() != EOF){
+        inputBinario.push_back(buffer.lerRegistro(inFile));
+    }
+
+    inFile.close();
+
+    return inputBinario;
+}

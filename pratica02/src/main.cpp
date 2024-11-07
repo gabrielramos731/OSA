@@ -6,6 +6,7 @@ int main()
 {
     Arquivo arquivo;
     string fileoutName;
+    vector<Registro> outBinario;
     int i=1;
 
     std::vector<std::string> arquivosCSV = {
@@ -18,11 +19,13 @@ int main()
 
     for(std::string dirArquivo : arquivosCSV){
         fileoutName = "../pratica02/files/fileout/Saida_" + std::to_string(i++);
+
         arquivo.lerArquivoCSV(dirArquivo);
-        arquivo.escreverArquivoBinario(fileoutName + ".bin");
-        arquivo.escreverArquivoTexto(fileoutName + ".txt");
+        arquivo.adicionaRegistrosFixo(fileoutName + ".bin");
+        arquivo.adicionaRegistrosTxt(fileoutName + ".txt");  
+        outBinario = arquivo.lerRegistrosFixo(fileoutName + ".bin");
         arquivo.registros.clear();
     }
-
+    
     return 0;
 }
