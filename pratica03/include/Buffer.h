@@ -8,12 +8,15 @@ using namespace std;
 class Buffer
 {
 public:
+    string nomeArquivo;
+    fstream arquivo;
+
     Buffer();
     Buffer(const string& nomeArquivo);
 
-    Registro lerRegistro(std::ifstream& in);
-
-    void escreverRegistro(std::ofstream& out, const Registro& reg);  
+    void escreveRegistro(const Registro& reg);  
+    vector<Registro> lerRegistro();
+    
 };
 
 #endif

@@ -21,8 +21,8 @@ public:
     int tamanho;
 
     Registro();
-    Registro(const std::string& n, int i);
-
+    Registro(const std::string& n, const std::string& s, const std::string& t, const std::string& d);
+    
     std::string pack() const;
     void unpack(const std::string& data);
     std::string toString() const;

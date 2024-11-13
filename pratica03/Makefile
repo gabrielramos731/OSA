@@ -3,7 +3,7 @@ TARGET = main
 
 # Compilador e flags
 CXX = g++
-CXXFLAGS = -Wall -Wextra -Iinclude
+CXXFLAGS = -Wall -Wextra -Iinclude -march=native
 
 # Diretórios
 SRC_DIR = src
@@ -41,6 +41,6 @@ all: $(BIN_DIR)/$(TARGET)
 
 # Executa o programa
 run: $(BIN_DIR)/$(TARGET)
-	./$(BIN_DIR)/$(TARGET) > ./files/fileout/outBinario.txt
+	./$(BIN_DIR)/$(TARGET) > ./files/filesout/output.txt
 
 .PHONY: all clean rebuild run
