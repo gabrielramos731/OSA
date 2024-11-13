@@ -9,7 +9,20 @@ Registro::Registro(const std::string& n, const std::string& s, const std::string
 
 
 string Registro::pack() const {
-    return nome + "|" + sobrenome + "|" + telefone + "|" + dataNascimento + "\n";
+    ostringstream oss;
+    
+    auto serialize_string = [&](const string& str) {
+        size_t length = str.size();
+        oss.write(reinterpret_cast<const char*>(&length), sizeof(length));
+        oss.write(str.c_str(), length);
+    };
+
+    serialize_string(nome);
+    serialize_string(sobrenome);
+    serialize_string(telefone);
+    serialize_string(dataNascimento);
+
+    return oss.str();
 }
 
 void Registro::unpack(const std::string& linha) {
