@@ -1,7 +1,11 @@
 #include "../include/Registro.h"
+#include "../include/Indice.h"
+#include "../include/Arvore.h"
 
 using namespace std;
+ArvoreBinaria<Indice> arv;
 int i = 1;
+int pos = 0;
 Registro::Registro(){}
 
 string Registro::pack() const {
@@ -19,6 +23,18 @@ string Registro::pack() const {
         serialize_string(autores[i]);
     for(long unsigned int i=0; i<generos.size(); i++)
         serialize_string(generos[i]);
+
+    Indice indice_registro;
+    Nodo<Indice> no(indice_registro);
+
+    indice_registro.id = id;
+    indice_registro.posicao = oss.tellp();
+    arv.Inserir(no);
+
+    arv.Print();
+
+    pos+=oss.tellp();
+
     return oss.str();
 }
 
