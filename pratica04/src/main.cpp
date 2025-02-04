@@ -37,6 +37,6 @@ int main()
     Registro novoRegistro = {123213, "Novo Livro", "Autor Desconhecido", 2024, "Ficção"};
     novoRegistro.insereRegistro(caminhoBin, caminhoIndicesBin, novoRegistro);
 
-    cout << "Novo Registro Adicionado!"
+    cout << "Novo Registro Adicionado!";
     
 }
