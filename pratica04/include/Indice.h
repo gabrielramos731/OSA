@@ -2,6 +2,7 @@
 #define INDICE_H
 
 #include "Registro.h"
+#include "BinaryTree.h"
 
 using namespace std;
 
@@ -13,10 +14,9 @@ public:
     string nomeArquivo;
 
     Indice();
-    Indice(const std::string& arquivoNome);
-
-    std::string pack() const;
-    void unpack(const std::string& data);
+    Indice(const std::string& nomeArquivo);
+    void criaIndicesBin(const string& caminhoBinario, const string& caminhoIndices);
+    BinaryTree arvoreDeIndices(const string& caminhoIndices);
 };
 
 #endif

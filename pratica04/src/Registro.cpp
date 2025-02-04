@@ -1,97 +1,70 @@
 #include "../include/Registro.h"
 #include "../include/Indice.h"
-#include "../include/Arvore.h"
 
 using namespace std;
-ArvoreBinaria<Indice> arv;
-int i = 1;
-int pos = 0;
+
 Registro::Registro(){}
-
-string Registro::pack() const {
-    ostringstream oss;
+Registro::Registro(const long& id, const string& nome, const string& autores, const int& ano_publicacao, const string& generos) 
+    : id(id), nome(nome), autores(autores), ano_publicacao(ano_publicacao), generos(generos) {}
+ 
+Registro Registro::registroPorPosicao(const string& caminhoBinario, long posicao) {
+    ifstream arquivoBinario(caminhoBinario, ios::binary);
     
-    auto serialize_string = [&](const string& str) {
-        size_t length = str.size();
-        oss.write(reinterpret_cast<const char*>(&length), sizeof(length));
-        oss.write(str.c_str(), length);
-    };
-    
-    serialize_string(to_string(id));
-    serialize_string(to_string(ano_publicacao));
-    for(long unsigned int i=0; i<autores.size(); i++)
-        serialize_string(autores[i]);
-    for(long unsigned int i=0; i<generos.size(); i++)
-        serialize_string(generos[i]);
+    if (!arquivoBinario.is_open()) {
+        cerr << "Erro ao abrir arquivo principal!\n";
+        Registro nulo;
+        nulo.ano_publicacao = -1;
+        return nulo;
+    }
 
-    Indice indice_registro;
-    Nodo<Indice> no(indice_registro);
+    arquivoBinario.seekg(posicao, ios::beg);
 
-    indice_registro.id = id;
-    indice_registro.posicao = oss.tellp();
-    arv.Inserir(no);
+    size_t tamanho;
+    arquivoBinario.read(reinterpret_cast<char*>(&tamanho), sizeof(tamanho));
 
-    arv.Print();
+    Registro registro;
+    arquivoBinario.read(reinterpret_cast<char*>(&registro.id), sizeof(registro.id));
 
-    pos+=oss.tellp();
+    char buffer[256];
+    arquivoBinario.getline(buffer, 256, '\0');
+    registro.nome = buffer;
+    arquivoBinario.getline(buffer, 256, '\0');
+    registro.autores = buffer;
+    arquivoBinario.read(reinterpret_cast<char*>(&registro.ano_publicacao), sizeof(registro.ano_publicacao));
+    arquivoBinario.getline(buffer, 256, '\0');
+    registro.generos = buffer;
 
-    return oss.str();
+    arquivoBinario.close();
+    return registro;
 }
 
-void Registro::unpack(const std::string& linha) {
-    string id_parse;
-    string nome_parse;
-    string ano_parse;
-    string autor_parse;
-    string genero_parse;
-    stringstream ss(linha);
-    
-    bool aspas = false; 
-    char c;
-    string temp;
-    //avalia se existe ; dentro de aspas e impede que isso quebre a ordem das colunas
-    while (ss.get(c)) {
-        if (c == '"') {
-            aspas = !aspas;
-        } else if (c == ';' && !aspas) {
-            if (id_parse.empty()) {
-                id_parse = temp;
-                temp.clear();
-            } else if (nome_parse.empty()) {
-                nome_parse = temp;
-                temp.clear();
-            } else if (autor_parse.empty()) {
-                autor_parse = temp;
-                temp.clear();
-            } else if (ano_parse.empty()) {
-                ano_parse = temp;
-                temp.clear();
-            } else {
-                genero_parse = temp;
-                temp.clear();
-            }
-        } else {
-            temp += c;
-        }
+void Registro::insereRegistro(const string& caminhoBinario, const string& caminhoIndices, const Registro& novoRegistro) {
+    fstream arquivoBinario(caminhoBinario, ios::binary | ios::in | ios::out);
+    if (!arquivoBinario.is_open()) {
+        cerr << "Erro ao abrir o arquivo principal para inserção!\n";
+        return;
     }
 
-    nome = nome_parse;
-    if (!temp.empty() && genero_parse.empty()) {
-        genero_parse = temp;
-    }
-    indice = i;
-    i++;
+    arquivoBinario.seekp(0, ios::end);  
+    long novaPosicao = arquivoBinario.tellp();
 
-    id = stol(id_parse);
-    ano_publicacao = stoi(ano_parse);
-    stringstream aa(autor_parse);
-    string aux_autor;
-    while(getline(aa, aux_autor, ',')){
-        autores.push_back(aux_autor);
+    arquivoBinario.write(reinterpret_cast<const char*>(&novoRegistro.id), sizeof(novoRegistro.id));  
+    arquivoBinario.write(novoRegistro.nome.c_str(), novoRegistro.nome.size() + 1);  
+    arquivoBinario.write(novoRegistro.autores.c_str(), novoRegistro.autores.size() + 1);  
+    arquivoBinario.write(reinterpret_cast<const char*>(&novoRegistro.ano_publicacao), sizeof(novoRegistro.ano_publicacao));  
+    arquivoBinario.write(novoRegistro.generos.c_str(), novoRegistro.generos.size() + 1);  
+
+    arquivoBinario.close();
+
+    fstream arquivoIndices(caminhoIndices, ios::binary | ios::in | ios::out);
+    if (!arquivoIndices.is_open()) {
+        cerr << "Erro ao abrir o arquivo de índice!\n";
+        return;
     }
-    stringstream ag(genero_parse);
-    string aux_genero;
-    while(getline(ag, aux_genero, ',')){
-        generos.push_back(aux_genero);
-    }    
+
+    arquivoIndices.seekp(0, ios::end);
+    arquivoIndices.write(reinterpret_cast<const char*>(&novoRegistro.id), sizeof(novoRegistro.id));
+    arquivoIndices.write(reinterpret_cast<const char*>(&novaPosicao), sizeof(novaPosicao));
+
+    arquivoIndices.close();
 }

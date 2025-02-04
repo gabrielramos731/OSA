@@ -6,7 +6,6 @@
 #include <vector>
 #include <cstring>
 #include <sstream>
-// #include <format>
 #include <string>
 #include <algorithm>
 
@@ -17,16 +16,14 @@ class Registro
 public:
     long int id;
     string nome;
-    vector<string> autores;
+    string autores;
     int ano_publicacao;
-    vector<string> generos;
-    int indice;
+    string generos;
 
     Registro();
-    
-    std::string pack() const;
-    void unpack(const std::string& data);
-    std::string toString() const;
+    Registro(const long& id, const string& nome, const string& autores, const int& ano_publicacao, const string& generos);
+    Registro registroPorPosicao(const string& caminhoBinario, long posicao);
+    void insereRegistro(const string& caminhoBinario, const string& caminhoIndices, const Registro& novoRegistro);
 };
 
 #endif

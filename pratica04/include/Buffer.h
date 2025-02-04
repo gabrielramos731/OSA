@@ -14,9 +14,7 @@ public:
 
     Buffer();
     Buffer(const std::string& arquivoNomeIn, const std::string& arquivoNomeOut);
-
-    void escreveRegistro(const vector<Registro>& reg);  
-    vector<Registro> lerRegistro();
+    void criaRegistrosBin();
 };
 
 #endif

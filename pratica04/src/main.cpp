@@ -1,26 +1,42 @@
 #include "../include/Buffer.h"
-#include "../include/Arvore.h"
+#include "../include/Indice.h"
+#include "../include/BinaryTree.h"
+
 
 using namespace std;
 
 int main()
 {
-    Buffer buffer("./files/booksDataset.csv", "./files/filesout/output.bin");
+    const string caminhoCSV = "./files/booksDataset.csv";
+    const string caminhoBin = "./files/filesout/registros.bin";
+    const string caminhoIndicesBin = "./files/filesout/indices.bin";
 
-    vector<Registro> registrosDelimitados = buffer.lerRegistro();
-    buffer.escreveRegistro(registrosDelimitados);
-    // for(auto& reg : registrosDelimitados){
+    Buffer buffer(caminhoCSV, caminhoBin);
+    buffer.criaRegistrosBin();
 
-    //     cout << "Id: " << reg.id << "; nome: " << reg.nome << "; Autores: ";
-    //     for(auto &autor : reg.autores){
-    //         cout << autor;
-    //     }
-    //     cout << "; generos: ";
-    //     for(auto &genero : reg.generos){
-    //         cout << genero;
-    //     }
-    //     cout << "; Indice: " << reg.indice << endl;
-    // }
+    Indice indices;
+    indices.criaIndicesBin(caminhoBin, caminhoIndicesBin);
 
-    ArvoreBinaria<int> arvTeste();
+    BinaryTree arvoreIndice;
+    arvoreIndice = indices.arvoreDeIndices(caminhoIndicesBin);
+
+    // busca por livro
+    int id_busca;
+    long posicao_bin;
+
+    cout << "Digite um id: ";
+    cin >> id_busca;
+
+    posicao_bin = arvoreIndice.busca(id_busca);
+    if(posicao_bin != -1){
+        Registro reg;
+        reg = reg.registroPorPosicao(caminhoBin, posicao_bin);
+        cout << "Livro encontrado!" << endl << "Nome: " << reg.nome << endl << "Autores: " << reg.autores << endl << "Ano de publicação: " << reg.ano_publicacao << endl << "Generos: " << reg.generos << endl;
+    }else cout << "Livro não encontrado!";
+
+    Registro novoRegistro = {123213, "Novo Livro", "Autor Desconhecido", 2024, "Ficção"};
+    novoRegistro.insereRegistro(caminhoBin, caminhoIndicesBin, novoRegistro);
+
+    cout << "Novo Registro Adicionado!"
+    
 }
