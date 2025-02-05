@@ -73,7 +73,20 @@ void Indice::tratativaDeNome(const string nome, const int id, map<string, vector
     stringstream ss(nome);
     string palavra;
     while (ss >> palavra) {
+        while (ss >> palavra) {
+        // Remover pontuações
+        palavra.erase(remove_if(palavra.begin(), palavra.end(), [&](char c) {
+            return find(pontuacoes.begin(), pontuacoes.end(), c) != pontuacoes.end();
+        }), palavra.end());
 
+        // Converter para minúsculas
+        transform(palavra.begin(), palavra.end(), palavra.begin(), ::tolower);
+
+        // Verificar se a palavra não é uma stopword e não é vazia
+        if (!palavra.empty() && find(stopwords.begin(), stopwords.end(), palavra) == stopwords.end()) {
+            recorrencias[palavra].push_back(id);
+        }
+    }
     }
 }
 
@@ -90,28 +103,28 @@ void Indice::indiceInvertido(const string& caminhoBinario){
 
     map<string, vector<int>> recorrencias;
 
-    while(arquivoBinario.peek() != EOF){
-        arquivoBinario.read(reinterpret_cast<char*>(&tamanho), sizeof(tamanho));
+    while (arquivoBinario.read(reinterpret_cast<char*>(&tamanho), sizeof(tamanho))) {
         arquivoBinario.read(reinterpret_cast<char*>(&registro.id), sizeof(registro.id));
-        char buffer[256];
-        arquivoBinario.getline(buffer, 256, '\0');
-        registro.nome = buffer;
-        arquivoBinario.getline(buffer, 256, '\0');
-        registro.autores = buffer;
-        arquivoBinario.read(reinterpret_cast<char*>(&registro.ano_publicacao), sizeof(registro.ano_publicacao));
-        arquivoBinario.getline(buffer, 256, '\0');
-        registro.generos = buffer;
-
-        cout << registro.id << ": " << registro.nome << endl;
+        
+        char* buffer = new char[tamanho - sizeof(registro.id)];
+        arquivoBinario.read(buffer, tamanho - sizeof(registro.id));
+        
+        stringstream ss(buffer);
+        getline(ss, registro.nome, '\0');
+        getline(ss, registro.autores, '\0');
+        ss.read(reinterpret_cast<char*>(&registro.ano_publicacao), sizeof(registro.ano_publicacao));
+        getline(ss, registro.generos, '\0');
+        
+        delete[] buffer;
 
         tratativaDeNome(registro.nome, registro.id, recorrencias);
     }
 
-    // for (const auto& par : recorrencias) {
-    //     cout << "Palavra: " << par.first << " - IDs: ";
-    //     for (const auto& id : par.second) {
-    //         cout << id << " ";
-    //     }
-    //     cout << endl;
-    // }
+    for (const auto& par : recorrencias) {
+        cout << "Palavra: " << par.first << " - IDs: ";
+        for (const auto& id : par.second) {
+            cout << id << " ";
+        }
+        cout << endl;
+    }
 }
