@@ -19,6 +19,7 @@ int main()
 
     BinaryTree arvoreIndice;
     arvoreIndice = indices.arvoreDeIndices(caminhoIndicesBin);
+    
 
     // // busca por livro
     // int id_busca;
@@ -40,6 +41,7 @@ int main()
 
     // cout << "Novo Registro Adicionado!" << endl;
 
+    
     indices.indiceInvertido(caminhoBin);
     
 }

@@ -3,6 +3,7 @@
 
 #include "Registro.h"
 #include "BinaryTree.h"
+#include <map>
 
 using namespace std;
 
@@ -17,6 +18,7 @@ public:
     Indice(const std::string& nomeArquivo);
     void criaIndicesBin(const string& caminhoBinario, const string& caminhoIndices);
     BinaryTree arvoreDeIndices(const string& caminhoIndices);
+    void tratativaDeNome(const string nome, const int id, map<string, vector<int>>& recorrencias);
     void indiceInvertido(const string& caminhoBinario);
 };
 

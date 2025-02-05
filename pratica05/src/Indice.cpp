@@ -63,15 +63,21 @@ BinaryTree Indice::arvoreDeIndices(const string& caminhoIndices) {
     return arvore;
 }
 
-void Indice::indiceInvertido(const string& caminhoBinario){
+void Indice::tratativaDeNome(const string nome, const int id, map<string, vector<int>>& recorrencias) {
     vector<string> stopwords = {"a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "if", "in", "into", "is", "it", "no",
                                 "not", "of", "on", "or", "such", "that", "the", "their", "then", "there", "these", "they", "this",
-                                "to", "was", "were", "which", "while", "with", "would"};
-                                
+                                "to", "was", "were", "which", "while", "with", "would"};                          
     vector<char> pontuacoes = {'.', ',', ';', ':', '?', '!', '"', '\'', '(', ')', '[', ']', '{', '}', '-', '/', '\\', '+', '*', 
                                '$', '@', '%', '&', '>', '<', '~', '='};
-                               
-    unordered_map<string, vector<int>> indiceInvertido;
+
+    stringstream ss(nome);
+    string palavra;
+    while (ss >> palavra) {
+
+    }
+}
+
+void Indice::indiceInvertido(const string& caminhoBinario){
     ifstream arquivoBinario(caminhoBinario, ios::binary);
 
     if (!arquivoBinario.is_open()) {
@@ -79,50 +85,33 @@ void Indice::indiceInvertido(const string& caminhoBinario){
         return;
     }
 
-    while (!arquivoBinario.eof()) {
-        size_t tamanho;
+    size_t tamanho;
+    Registro registro;
+
+    map<string, vector<int>> recorrencias;
+
+    while(arquivoBinario.peek() != EOF){
         arquivoBinario.read(reinterpret_cast<char*>(&tamanho), sizeof(tamanho));
+        arquivoBinario.read(reinterpret_cast<char*>(&registro.id), sizeof(registro.id));
+        char buffer[256];
+        arquivoBinario.getline(buffer, 256, '\0');
+        registro.nome = buffer;
+        arquivoBinario.getline(buffer, 256, '\0');
+        registro.autores = buffer;
+        arquivoBinario.read(reinterpret_cast<char*>(&registro.ano_publicacao), sizeof(registro.ano_publicacao));
+        arquivoBinario.getline(buffer, 256, '\0');
+        registro.generos = buffer;
 
-        if (arquivoBinario.eof()) break;
+        cout << registro.id << ": " << registro.nome << endl;
 
-        int id;
-        arquivoBinario.read(reinterpret_cast<char*>(&id), sizeof(id));
-
-        vector<char> buffer(tamanho - sizeof(id));
-        arquivoBinario.read(buffer.data(), buffer.size());
-
-        string registro(buffer.begin(), buffer.end());
-        istringstream stream(registro);
-        string palavra;
-
-        // Extrair o campo nome (título) do registro
-        long posicao = static_cast<long>(arquivoBinario.tellg()) - static_cast<long>(tamanho);
-        Registro reg;
-        reg = reg.registroPorPosicao(caminhoBinario, posicao);
-        string nome = reg.nome;
-
-        istringstream nomeStream(nome);
-
-        while (nomeStream >> palavra) {
-            palavra.erase(remove_if(palavra.begin(), palavra.end(), [&pontuacoes](char c) {
-                return ispunct(c) || find(pontuacoes.begin(), pontuacoes.end(), c) != pontuacoes.end();
-            }), palavra.end());
-            transform(palavra.begin(), palavra.end(), palavra.begin(), ::tolower);
-
-            if (find(stopwords.begin(), stopwords.end(), palavra) == stopwords.end()) {
-                indiceInvertido[palavra].push_back(id);
-            }
-        }
+        tratativaDeNome(registro.nome, registro.id, recorrencias);
     }
 
-    arquivoBinario.close();
-
-    // Exemplo de como imprimir o índice invertido
-    for (const auto& [palavra, ids] : indiceInvertido) {
-        cout << palavra << ": ";
-        for (int id : ids) {
-            cout << id << " ";
-        }
-        cout << endl;
-    }
+    // for (const auto& par : recorrencias) {
+    //     cout << "Palavra: " << par.first << " - IDs: ";
+    //     for (const auto& id : par.second) {
+    //         cout << id << " ";
+    //     }
+    //     cout << endl;
+    // }
 }

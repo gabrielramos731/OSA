@@ -42,5 +42,4 @@ all: $(BIN_DIR)/$(TARGET)
 # Executa o programa
 run: $(BIN_DIR)/$(TARGET)
 	./$(BIN_DIR)/$(TARGET) > ./files/filesout/out.txt
-
 .PHONY: all clean rebuild run
