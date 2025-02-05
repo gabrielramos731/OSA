@@ -34,7 +34,7 @@ int main()
         cout << "Livro encontrado!" << endl << "Nome: " << reg.nome << endl << "Autores: " << reg.autores << endl << "Ano de publicação: " << reg.ano_publicacao << endl << "Generos: " << reg.generos << endl;
     }else cout << "Livro não encontrado!";
 
-    Registro novoRegistro = {123213, "Novo Livro", "Autor Desconhecido", 2024, "Ficção"};
+    Registro novoRegistro = {1000000, "The one who never sleeps", "Unknown", 2024, "Terror"};
     novoRegistro.insereRegistro(caminhoBin, caminhoIndicesBin, novoRegistro);
 
     cout << "Novo Registro Adicionado!";
