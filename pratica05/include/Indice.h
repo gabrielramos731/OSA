@@ -19,7 +19,9 @@ public:
     void criaIndicesBin(const string& caminhoBinario, const string& caminhoIndices);
     BinaryTree arvoreDeIndices(const string& caminhoIndices);
     void tratativaDeNome(const string nome, const int id, map<string, vector<int>>& recorrencias);
-    void indiceInvertido(const string& caminhoBinario);
+    map<string, vector<int>> indiceInvertido(const string& caminhoBinario);
+    vector<string> tratarString(const string& str);
+    vector<int> buscarRegistros(const map<string, vector<int>>& recorrencias, const string& consulta);
 };
 
 #endif

@@ -20,28 +20,45 @@ int main()
     BinaryTree arvoreIndice;
     arvoreIndice = indices.arvoreDeIndices(caminhoIndicesBin);
     
+    // busca por livro
+    int id_busca;
+    long posicao_bin;
 
-    // // busca por livro
-    // int id_busca;
-    // long posicao_bin;
+    cout << "Digite um id: ";
+    cin >> id_busca;
 
-    // cout << "Digite um id: ";
-    // cin >> id_busca;
+    posicao_bin = arvoreIndice.busca(id_busca);
+    if(posicao_bin != -1){
+        Registro reg;
+        reg = reg.registroPorPosicao(caminhoBin, posicao_bin);
+        cout << "Livro encontrado!" << endl << "Nome: " << reg.nome << endl << "Autores: " << reg.autores << endl << "Ano de publicação: " << reg.ano_publicacao << endl << "Generos: " << reg.generos << endl;
+    }else cout << "Livro não encontrado!";
 
-    // posicao_bin = arvoreIndice.busca(id_busca);
-    // if(posicao_bin != -1){
-    //     Registro reg;
-    //     reg = reg.registroPorPosicao(caminhoBin, posicao_bin);
-    //     cout << "Livro encontrado!" << endl << "Nome: " << reg.nome << endl << "Autores: " << reg.autores << endl << "Ano de publicação: " << reg.ano_publicacao << endl << "Generos: " << reg.generos << endl;
-    // }else cout << "Livro não encontrado!";
+    //adicionar novo registro
+    Registro novoRegistro = {1000000, "The one who never sleeps", "Unknown", 2024, "Terror"};
+    novoRegistro.insereRegistro(caminhoBin, caminhoIndicesBin, novoRegistro);
 
-    // //adicionar novo registro
-    // Registro novoRegistro = {1000000, "The one who never sleeps", "Unknown", 2024, "Terror"};
-    // novoRegistro.insereRegistro(caminhoBin, caminhoIndicesBin, novoRegistro);
-
-    // cout << "Novo Registro Adicionado!" << endl;
-
+    cout << "Novo Registro Adicionado!" << endl;
     
-    indices.indiceInvertido(caminhoBin);
+    //busca por indice inverso
+    map<string, vector<int>> recorrencias;
+    recorrencias = indices.indiceInvertido(caminhoBin);
     
+    string consulta;
+    cout << "Digite a consulta: ";
+    getline(cin, consulta);
+
+    vector<int> idsRelevantes = indices.buscarRegistros(recorrencias, consulta);
+
+    long posicao_busca;
+    cout << "Resultado da Busca: " << endl << endl;
+    for (const auto& id : idsRelevantes) {
+        posicao_busca = arvoreIndice.busca(id);
+        if(posicao_busca != -1){
+            Registro reg;
+            reg = reg.registroPorPosicao(caminhoBin, posicao_busca);
+            cout << "Id: " << reg.id << endl << "Nome: " << reg.nome << endl << "Autores: " << reg.autores << endl << "Ano de publicação: " << reg.ano_publicacao << endl << "Generos: " << reg.generos << endl << endl;
+        }else cout << "Livro não encontrado!";
+    }
+    cout << endl;
 }

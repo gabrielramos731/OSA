@@ -2,10 +2,22 @@
 #include "../include/Registro.h"
 #include "../include/BinaryTree.h"
 #include <unordered_map>
+#include <algorithm>
+#include <sstream>
+#include <iostream>
 
 using namespace std;
 
+// Definição das stopwords e pontuações como constantes globais
+const vector<string> STOPWORDS = {"a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "if", "in", "into", "is", "it", "no",
+                                  "not", "of", "on", "or", "such", "that", "the", "their", "then", "there", "these", "they", "this",
+                                  "to", "was", "were", "which", "while", "with", "would"};
+
+const vector<char> PONTUACOES = {'.', ',', ';', ':', '?', '!', '"', '\'', '(', ')', '[', ']', '{', '}', '-', '/', '\\', '+', '*', 
+                                 '$', '@', '%', '&', '>', '<', '~', '='};
+
 Indice::Indice(){}
+
 
 void Indice::criaIndicesBin(const string& caminhoBinario, const string& caminhoIndices) {
     ifstream arquivoBinario(caminhoBinario, ios::binary);
@@ -64,44 +76,35 @@ BinaryTree Indice::arvoreDeIndices(const string& caminhoIndices) {
 }
 
 void Indice::tratativaDeNome(const string nome, const int id, map<string, vector<int>>& recorrencias) {
-    vector<string> stopwords = {"a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "if", "in", "into", "is", "it", "no",
-                                "not", "of", "on", "or", "such", "that", "the", "their", "then", "there", "these", "they", "this",
-                                "to", "was", "were", "which", "while", "with", "would"};                          
-    vector<char> pontuacoes = {'.', ',', ';', ':', '?', '!', '"', '\'', '(', ')', '[', ']', '{', '}', '-', '/', '\\', '+', '*', 
-                               '$', '@', '%', '&', '>', '<', '~', '='};
-
     stringstream ss(nome);
     string palavra;
     while (ss >> palavra) {
-        while (ss >> palavra) {
         // Remover pontuações
         palavra.erase(remove_if(palavra.begin(), palavra.end(), [&](char c) {
-            return find(pontuacoes.begin(), pontuacoes.end(), c) != pontuacoes.end();
+            return find(PONTUACOES.begin(), PONTUACOES.end(), c) != PONTUACOES.end();
         }), palavra.end());
 
         // Converter para minúsculas
         transform(palavra.begin(), palavra.end(), palavra.begin(), ::tolower);
 
         // Verificar se a palavra não é uma stopword e não é vazia
-        if (!palavra.empty() && find(stopwords.begin(), stopwords.end(), palavra) == stopwords.end()) {
+        if (!palavra.empty() && find(STOPWORDS.begin(), STOPWORDS.end(), palavra) == STOPWORDS.end()) {
             recorrencias[palavra].push_back(id);
         }
     }
-    }
 }
 
-void Indice::indiceInvertido(const string& caminhoBinario){
+map<string, vector<int>> Indice::indiceInvertido(const string& caminhoBinario){
     ifstream arquivoBinario(caminhoBinario, ios::binary);
+    map<string, vector<int>> recorrencias;
 
     if (!arquivoBinario.is_open()) {
         cerr << "Erro ao abrir arquivo binário!\n";
-        return;
+        return recorrencias;
     }
 
     size_t tamanho;
     Registro registro;
-
-    map<string, vector<int>> recorrencias;
 
     while (arquivoBinario.read(reinterpret_cast<char*>(&tamanho), sizeof(tamanho))) {
         arquivoBinario.read(reinterpret_cast<char*>(&registro.id), sizeof(registro.id));
@@ -120,11 +123,51 @@ void Indice::indiceInvertido(const string& caminhoBinario){
         tratativaDeNome(registro.nome, registro.id, recorrencias);
     }
 
-    for (const auto& par : recorrencias) {
-        cout << "Palavra: " << par.first << " - IDs: ";
-        for (const auto& id : par.second) {
-            cout << id << " ";
+    return recorrencias;
+}
+
+vector<string> Indice::tratarString(const string& str) {
+    stringstream ss(str);
+    string palavra;
+    vector<string> palavrasTratadas;
+
+    while (ss >> palavra) {
+        // Remover pontuações
+        palavra.erase(remove_if(palavra.begin(), palavra.end(), [&](char c) {
+            return find(PONTUACOES.begin(), PONTUACOES.end(), c) != PONTUACOES.end();
+        }), palavra.end());
+
+        // Converter para minúsculas
+        transform(palavra.begin(), palavra.end(), palavra.begin(), ::tolower);
+
+        // Verificar se a palavra não é uma stopword e não é vazia
+        if (!palavra.empty() && find(STOPWORDS.begin(), STOPWORDS.end(), palavra) == STOPWORDS.end()) {
+            palavrasTratadas.push_back(palavra);
         }
-        cout << endl;
     }
+
+    return palavrasTratadas;
+}
+
+vector<int> Indice::buscarRegistros(const map<string, vector<int>>& recorrencias, const string& consulta) {
+    vector<string> palavrasTratadas = tratarString(consulta);
+    unordered_map<int, int> frequenciaIds;
+
+    for (const auto& palavra : palavrasTratadas) {
+        auto it = recorrencias.find(palavra);
+        if (it != recorrencias.end()) {
+            for (const auto& id : it->second) {
+                frequenciaIds[id]++;
+            }
+        }
+    }
+
+    vector<int> idsRelevantes;
+    for (const auto& par : frequenciaIds) {
+        if (par.second == palavrasTratadas.size()) {
+            idsRelevantes.push_back(par.first);
+        }
+    }
+
+    return idsRelevantes;
 }
