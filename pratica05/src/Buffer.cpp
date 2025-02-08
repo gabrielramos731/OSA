@@ -14,7 +14,7 @@ void Buffer::criaRegistrosBin() {
 
     string line;
     bool firstLine = true;
-    int bookCount = 0;
+    int registroCount = 0;
     while (getline(csvFile, line)) {
         if (firstLine) {
             firstLine = false;
@@ -22,45 +22,45 @@ void Buffer::criaRegistrosBin() {
         }
 
         istringstream ss(line);
-        Registro book;
+        Registro registro;
 
-        book.id = -1;
-        book.nome = "Desconhecido";
-        book.autores = "Desconhecido";
-        book.ano_publicacao = 0;
-        book.generos = "Indefinido";
+        registro.id = -1;
+        registro.nome = "Desconhecido";
+        registro.autores = "Desconhecido";
+        registro.ano_publicacao = 0;
+        registro.generos = "Indefinido";
 
         string idStr, ano_publicacaoStr;
         if (getline(ss, idStr, ';')) {
             try {
-                book.id = stoi(idStr);
+                registro.id = stoi(idStr);
             } catch (...) {
                 cerr << "Erro: ID inválido em '" << idStr << "'\n";
                 continue;
             }
         }
 
-        getline(ss, book.nome, ';');
-        getline(ss, book.autores, ';');
+        getline(ss, registro.nome, ';');
+        getline(ss, registro.autores, ';');
         if (getline(ss, ano_publicacaoStr, ';')) {
             try {
-                book.ano_publicacao = stoi(ano_publicacaoStr);
+                registro.ano_publicacao = stoi(ano_publicacaoStr);
             } catch (...) {
-                book.ano_publicacao = 0;
+                registro.ano_publicacao = 0;
             }
         }
-        getline(ss, book.generos, ';');
+        getline(ss, registro.generos, ';');
 
-        size_t size = sizeof(book.id) + book.nome.size() + 1 + book.autores.size() + 1 +
-                      sizeof(book.ano_publicacao) + book.generos.size() + 1;
+        size_t size = sizeof(registro.id) + registro.nome.size() + 1 + registro.autores.size() + 1 +
+                      sizeof(registro.ano_publicacao) + registro.generos.size() + 1;
         binFile.write(reinterpret_cast<char*>(&size), sizeof(size));
-        binFile.write(reinterpret_cast<char*>(&book.id), sizeof(book.id));
-        binFile.write(book.nome.c_str(), book.nome.size() + 1);
-        binFile.write(book.autores.c_str(), book.autores.size() + 1);
-        binFile.write(reinterpret_cast<char*>(&book.ano_publicacao), sizeof(book.ano_publicacao));
-        binFile.write(book.generos.c_str(), book.generos.size() + 1);
+        binFile.write(reinterpret_cast<char*>(&registro.id), sizeof(registro.id));
+        binFile.write(registro.nome.c_str(), registro.nome.size() + 1);
+        binFile.write(registro.autores.c_str(), registro.autores.size() + 1);
+        binFile.write(reinterpret_cast<char*>(&registro.ano_publicacao), sizeof(registro.ano_publicacao));
+        binFile.write(registro.generos.c_str(), registro.generos.size() + 1);
 
-        bookCount++;
+        registroCount++;
     }
 
     csvFile.close();
